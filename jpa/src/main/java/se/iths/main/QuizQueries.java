@@ -22,10 +22,10 @@ public class QuizQueries {
                         Sveriges läns högsta berg
                         4. Lätt
                         5. Medel
-                        6. Svår        
+                        6. Svår
                         
                         Exit
-                7. Tillbaka till huvudmenyn
+                        7. Tillbaka till huvudmenyn
                 """);
         return Main.input();
     }
@@ -71,7 +71,6 @@ public class QuizQueries {
     }
 
     public static void difficultyLevelCity (int userID, int difficultyID, int categoryID) {
-        User user = em.find(User.class, userID);
         List<Quiz> quizList = getQuizByDifficultyAndCategory(difficultyID, categoryID);
 
         int score = 0;
@@ -93,7 +92,6 @@ public class QuizQueries {
     }
 
     public static void difficultyLevelMountain (int userID, int difficultyID, int categoryID) {
-        User user = em.find(User.class, userID);
         List<Quiz> quizList = getQuizByDifficultyAndCategory(difficultyID, categoryID);
 
         int score = 0;
@@ -115,14 +113,13 @@ public class QuizQueries {
     }
 
     public static List<Quiz> getQuizByDifficultyAndCategory(int difficultyID, int categoryID) {
-    List<Quiz> quizzes = em.createQuery(
-            "SELECT q FROM Quiz q WHERE q.difficultyID.id = :difficultyID AND q.categoryID.id = :categoryID",
-                    Quiz.class
-            )
-            .setParameter("difficultyID", difficultyID)
-            .setParameter("categoryID", categoryID)
-            .getResultList();
-    return quizzes;
+        return em.createQuery(
+                        "SELECT q FROM Quiz q WHERE q.difficultyID.id = :difficultyID AND q.categoryID.id = :categoryID",
+                        Quiz.class
+                )
+                .setParameter("difficultyID", difficultyID)
+                .setParameter("categoryID", categoryID)
+                .getResultList();
     }
 
     public static void saveResult(int userID, int score) {

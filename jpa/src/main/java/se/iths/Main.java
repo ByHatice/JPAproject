@@ -1,8 +1,6 @@
 package se.iths;
 
 import jakarta.persistence.*;
-import se.iths.entity.Quiz;
-import se.iths.entity.Result;
 import se.iths.entity.User;
 import se.iths.main.QuizQueries;
 import java.util.*;
@@ -61,7 +59,8 @@ public class Main {
                 3. Uppdatera spelare
                 4. Ta bort spelare
                 5. Starta quiz
-                6. Avsluta programmet
+                6. Visa resultatlista
+                7. Avsluta programmet
                 
                       """);
         return input();
