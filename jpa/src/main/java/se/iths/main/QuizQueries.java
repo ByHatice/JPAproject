@@ -6,6 +6,7 @@ import se.iths.entity.Result;
 import se.iths.entity.User;
 
 import static se.iths.Main.*;
+import static se.iths.Main.em;
 
 
 public class QuizQueries {
@@ -123,17 +124,23 @@ public class QuizQueries {
     }
 
     public static void saveResult(int userID, int score) {
-        User user = em.find(User.class, userID);
-        Result result = new Result();
-
-        result.setScore(score);
-        result.setUserID(user);
-
         inTransaction(em -> {
-            em.persist(result);
-            System.out.println("Resultatet är sparat!\n");
+            User user = em.find(User.class, userID);
+            Result existingResult = user.getResults().stream()
+                    .filter(result -> result.getScore() == score)
+                    .findFirst()
+                    .orElse(null);
+
+            if (existingResult != null) {
+                existingResult.setScore(existingResult.getScore() + score);
+                em.merge(existingResult);
+            } else {
+                Result result = new Result();
+                result.setScore(score);
+                result.setUserID(user);
+                user.getResults().add(result);
+                em.persist(result);
+            }
         });
-        em.persist(result);
-        em.getTransaction().commit();
     }
 }
