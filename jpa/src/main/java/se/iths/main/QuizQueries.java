@@ -4,8 +4,8 @@ import se.iths.Main;
 import se.iths.entity.Quiz;
 import se.iths.entity.Result;
 import se.iths.entity.User;
-import static se.iths.Main.em;
-import static se.iths.Main.scanner;
+
+import static se.iths.Main.*;
 
 
 public class QuizQueries {
@@ -76,7 +76,7 @@ public class QuizQueries {
         int score = 0;
 
         for (Quiz quiz : quizList) {
-            System.out.println("Vad är residentstaden i " + quiz.getQuestionID() + "?");
+            System.out.println("Vad heter residentstaden i " + quiz.getQuestionID() + "?");
             String userAnswer = scanner.nextLine().trim(); // tar bort extra whitespace
 
             if (userAnswer.equalsIgnoreCase(quiz.getCorrectAnswer())) {
@@ -97,7 +97,7 @@ public class QuizQueries {
         int score = 0;
 
         for (Quiz quiz : quizList) {
-            System.out.println("Vad är högsta toppen i  " + quiz.getQuestionID() + "?");
+            System.out.println("Vad heter högsta toppen i  " + quiz.getQuestionID() + "?");
             String userAnswer = scanner.nextLine().trim(); // tar bort extra whitespace
 
             if (userAnswer.equalsIgnoreCase(quiz.getCorrectAnswer())) {
@@ -129,7 +129,10 @@ public class QuizQueries {
         result.setScore(score);
         result.setUserID(user);
 
-        em.getTransaction().begin();
+        inTransaction(em -> {
+            em.persist(result);
+            System.out.println("Resultatet är sparat!\n");
+        });
         em.persist(result);
         em.getTransaction().commit();
     }

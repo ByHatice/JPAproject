@@ -99,10 +99,10 @@ public class Main {
 
         if (user != null) {
             String playerName = user.getFirstName() + " " + user.getLastName();
-            em.getTransaction().begin();
-            em.remove(user);
-            em.getTransaction().commit();
-            System.out.println(playerName + " är borttagen!\n");
+           inTransaction(em -> {
+               em.remove(user);
+               System.out.println(playerName + " är borttagen!\n");
+              });
         } else {
             System.out.println("Spelare med ID " + id + " finns inte i databasen.\n");
         }
@@ -111,19 +111,23 @@ public class Main {
     public static void updateUser() {
         System.out.println("Uppdatera spelare");
         System.out.println("Ange ID på spelare som ska uppdateras: ");
+
         int id = input();
+
         User user = em.find(User.class, id);
         if (user != null) {
             System.out.println("Ange nytt förnamn: ");
             String firstName = scanner.nextLine();
             System.out.println("Ange nytt efternamn: ");
             String lastName = scanner.nextLine();
+
             user.setFirstName(firstName);
             user.setLastName(lastName);
-            em.getTransaction().begin();
-            em.persist(user);
-            em.getTransaction().commit();
-            System.out.println("Spelare uppdaterad!\n");
+
+            inTransaction(em -> {
+                em.persist(user);
+                System.out.println("Spelare uppdaterad!\n");
+            });
         } else {
             System.out.println("Spelare med ID " + id + " finns inte i databasen.\n");
         }
@@ -166,7 +170,7 @@ public class Main {
         }
     }
 
-    static void inTransaction(Consumer<EntityManager> work) {
+    public static void inTransaction(Consumer<EntityManager> work) {
         try (EntityManager entityManager = JPAUtil.getEntityManager()) {
             EntityTransaction transaction = entityManager.getTransaction();
             try {
